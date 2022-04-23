@@ -1,19 +1,19 @@
 INSERT INTO department(dept_name) 
-VALUES ('Engineering'),
+VALUES ('Sales'),
+('Engineering'),
 ('Finance'),
-('Legal'),
-('Sales');
+('Legal');
 
 
 INSERT INTO emp_role(title, salary, dept_id)
- VALUES ('Sales Lead', '100000', 4),
- ('Salesperson', '80000', 4),
- ('Lead Engineer', '150000', 1),
- ('Software Engineer', '120000', 1),
- ('Account Manager', '160000', 2),
- ('Accountant', '125000', 2),
- ('Legal Team Lead', '250000', 3),
- ('Lawyer', '190000', 3);
+ VALUES ('Sales Lead', '100000', 1),
+ ('Salesperson', '80000', 1),
+ ('Lead Engineer', '150000', 2),
+ ('Software Engineer', '120000', 2),
+ ('Account Manager', '160000', 3),
+ ('Accountant', '125000', 3),
+ ('Legal Team Lead', '250000', 4),
+ ('Lawyer', '190000', 4);
 
 
 INSERT INTO employee (first_name, last_name, emp_role_id, manager_id)

@@ -53,7 +53,7 @@ function allDepts() {
 }
 
 function allRoles() {
-    db.query('SELECT * FROM emp_role', (err, results) => {
+    db.query('SELECT emp_role.id, emp_role.title, department.dept_name AS department, emp_role.salary FROM emp_role JOIN department ON emp_role.dept_id=department.id', (err, results) => {
         console.log(results)
         startApp();
     });
