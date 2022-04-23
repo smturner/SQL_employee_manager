@@ -25,8 +25,9 @@ last_name VARCHAR(30) NOT NULL,
 emp_role_id INT NOT NULL,
 FOREIGN KEY (emp_role_id) 
 REFERENCES emp_role(id),
-manager_id INT
-
+manager_id INT,
+FOREIGN KEY (manager_id) 
+REFERENCES employee(id)
 );
 
 -- FOREIGN KEY (manager_id) 
