@@ -10,7 +10,7 @@ function startApp() {
             type: "list",
             name: "menu",
             message: "What would you like to do?",
-            choices: ["View All Departments", "Add Department", "View All Roles", "Add Role", "View All Employees", "Add an Employee", "Update Employee Role", "Quit"]
+            choices: ["View All Departments", "Add Department", "View All Roles", "Add Role", "View All Employees", "Add an Employee", "Update Employee Role", "exit"]
         }
     ])
         .then((ans) => {
@@ -36,7 +36,7 @@ function startApp() {
                 case "Quit":
                     break;
                 default:
-                    break;
+                    process.exit();      
             }
         })
 }
