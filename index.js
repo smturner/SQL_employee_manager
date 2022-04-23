@@ -1,50 +1,69 @@
-// const mysql = require('mysql2');
 const inquirer = require('inquirer');
-require('dotenv').config();
-// const queryFunctions = require('./queryFunctions')
-const { allDepts } = require('./queryFunctions')
-// Connect to database
-// const db = mysql.createConnection(
-//     {
-//         host: 'localhost',
-//         // MySQL username,
-//         user: 'root',
-//         password: 'root',
-//         database: 'emp_tracker_db'
-//     },
-//     console.log(`Connected to the database.`)
-// );
-const opt = ["ALL_DEPT", "ALL_ROLES"];
+require('console.table');
+const db = require('./db/connection')
+// const { allDepts, allRoles } = require('./queryFunctions')
+
+
 function startApp() {
     inquirer.prompt([
         {
             type: "list",
-            name: "userview",
-            message: "What you want to see?",
-            choices: opt
+            name: "menu",
+            message: "What would you like to do?",
+            choices: ["View All Departments", "Add Department", "View All Roles", "Add Role", "View All Employees", "Add an Employee", "Update Employee Role", "Quit"]
         }
     ])
         .then((ans) => {
             console.log(ans);
-            switch (ans.userview) {
-                case opt[0]:
-                    // queryFunctions.allDepts();
+            switch (ans.menu) {
+                case "View All Departments":
                     allDepts();
                     break;
-
+                case "Add Department":
+                    break;
+                case "View All Roles":
+                    allRoles();
+                    break;
+                case "Add Role":
+                    break;
+                case "View All Employees":
+                    allEmployees();
+                    break;
+                case "Add an Employee":
+                    break;
+                case "Update Employee Role":
+                    break;
+                case "Quit":
+                    break;
                 default:
                     break;
             }
         })
 }
 
-startApp();
 
-// function allDepts() {
-//     db.query('SELECT * FROM department', function (err, results) {
-//         console.log(results);
-//         startApp();
-//     });
-// }
+startApp();
+// module.exports = { startApp }
+
+function allDepts() {
+    db.query('SELECT * FROM department', function (err, results) {
+        console.log(results);
+        startApp();
+    });
+}
+
+function allRoles() {
+    db.query('SELECT * FROM emp_role', (err, results) => {
+        console.log(results)
+        startApp();
+    });
+}
+
+function allEmployees() {
+    db.query('SELECT * FROM employee', (err, results) => {
+        console.log(results)
+        startApp();
+    });
+}
 
 
