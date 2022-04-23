@@ -90,7 +90,7 @@ const addRole = () => {
                 name: dept_name,
                 value: id
             }));
-            // console.log(departmentChoices)
+            console.log(departmentChoices)
 
             inquirer.prompt([
                 {
@@ -139,9 +139,8 @@ function allEmployees() {
 }
 
 const addEmployee = () => {
-    const roleId = db.promise().query('SELECT emp_role.id, emp_role.title FROM emp_role')
+    db.promise().query('SELECT emp_role.id, emp_role.title FROM emp_role')
         .then(([roles]) => {
-            // console.log(roles)
             let roleChoices = roles.map(({
                 id,
                 title
@@ -149,43 +148,135 @@ const addEmployee = () => {
                 name: title,
                 value: id
             }));
-            // console.log(roleChoices)
-        })
+            console.log(roleChoices)
 
-    const managerId = db.promise().query('SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id FROM employee')
+        db.promise().query ('SELECT CONCAT (employee.first_name, " ", employee.last_name) AS name, employee.id FROM employee')
         .then(([managers]) => {
+            console.log(managers)
             let managerChoices = managers.map(({
-                id,
+                id, 
+                name
+            }) => ({
+                name: name,
+                value: id
+            }));
+            console.log(managerChoices)
+        
+        
 
-            }))
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: "firstName",
+                    message: "What is the employee's first name?"
+                },
+                {
+                    type: 'input',
+                    name: "lastName",
+                    message: "What is the employee's last name?"
+                },
+                {
+                    type: 'list',
+                    name: "role",
+                    message: "What is the employee's role?",
+                    choices: roleChoices
+                },
+                {
+                    type: 'list',
+                    name: "manager",
+                    message: "Who is the employee's manager?",
+                    choices: managerChoices
+                }
+            ])
+                .then(({ firstName, lastName, role, manager }) => {
+                    console.log(firstName, lastName, role, manager)
+                    db.query(
+                        'INSERT INTO employee SET ?',
+                        {
+                            first_name: firstName,
+                            last_name: lastName,
+                            emp_role_id: role,
+                            manager_id: manager
+                        },
+                        function (err, results) {
+                            console.table(results)
+                        }
+                    )
+                })
+                .then(() => allEmployees())
         })
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: "firstName",
-            message: ""
-        },
-        {
-            type: 'input',
-            name: "lastName",
-            message: "What is the salary of the role?"
-        },
-        {
-            type: 'list',
-            name: "role",
-            message: "Which department does the role belong to?",
-            choices: departmentChoices
-        },
-        {
-            type: 'list',
-            name: "manager",
-            message: "Which department does the role belong to?",
-            choices: departmentChoices
-        }
-    ])
+    })
 }
-    
-    }
+// const addEmployee = () => {
+//    db.promise().query('SELECT emp_role.id, emp_role.title FROM emp_role')
+//         .then(([roles]) => {
+//             // console.log(roles)
+//             let roleChoices = roles.map(({
+//                 id,
+//                 title
+//             }) => ({
+//                 name: title,
+//                 value: id
+//             }));
+//             console.log(roleChoices)
+
+//         db.promise().query('SELECT CONCAT (employee.first_name, " ", employee.last_name) AS name, employee.id FROM employee')
+//         .then(([managers]) => {
+//             console.log(managers)
+//             let managerChoices = managers.map(({
+//                 id,
+//                 name
+//             }) => ({
+//                 name: name, 
+//                 value: id
+//             }));
+//             console.log(managerChoices)
+
+//     inquirer.prompt([
+//         {
+//             type: 'input',
+//             name: "firstName",
+//             message: "What is the employee's first name?"
+//         },
+//         {
+//             type: 'input',
+//             name: "lastName",
+//             message: "What is the employee's last name?"
+//         },
+//         {
+//             type: 'list',
+//             name: "role",
+//             message: "What is the employee's role?",
+//             choices: roleChoices
+//         },
+//         {
+//             type: 'list',
+//             name: "manager",
+//             message: "Who is the employee's manager?",
+//             choices: managerChoices
+//         }
+//     ])
+//         .then(({ firstName, lastName, role, manager }) => {
+//             console.log(firstName, lastName, role, manager)
+//             db.query(
+//                 'INSERT INTO employee SET ?',
+//                 {
+//                     first_name: firstName,
+//                     last_name: lastName,
+//                     emp_role_id: role,
+//                     manager_id: manager
+//                 },
+//                 function (err, results) {
+//                     console.table(results)
+//                 }
+//             )
+//         })
+//         .then(() => allEmployees())
+
+// })
+//         }
+
+
         // const managerId= db.promise().query('SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id FROM employee')
 //            
 
