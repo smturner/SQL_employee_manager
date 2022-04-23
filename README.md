@@ -14,7 +14,7 @@ Done----> view all roles (job title, role id, department that role belongs to, a
 Done----> view all employess (employee id, first name ,last name, job title, department, salarie, mangers they report to)
 Done----> add a department (prompted to enter name of department and it's added to the database)
 Done----> add a role (proompted to add name salary and department)
-  --  - add an employee (employee first name, lasts name, role, manager)
+Done---->  --  - add an employee (employee first name, lasts name, role, manager)
   --  - update an employee role (promted to select an employee to update and their new role)
 Done---->  --  - Exit
 

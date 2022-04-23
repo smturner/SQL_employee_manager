@@ -36,6 +36,7 @@ function startApp() {
                     addEmployee();
                     break;
                 case "Update Employee Role":
+                    updateEmpRole();
                     break;
                 case "Quit":
                     break;
@@ -46,8 +47,9 @@ function startApp() {
 }
 
 startApp();
-// module.exports = { startApp }
 
+
+//query functions
 function allDepts() {
     db.query('SELECT id, dept_name AS department FROM department;', function (err, results) {
         console.table(results);
@@ -110,8 +112,6 @@ const addRole = () => {
                     choices: departmentChoices
                 }
             ])
-
-
                 .then(({ title, department, salary }) => {
                     console.log(title, department, salary)
                     db.query(
@@ -127,7 +127,6 @@ const addRole = () => {
                     )
                 })
                 .then(() => allRoles())
-
         })
 }
 
@@ -150,153 +149,115 @@ const addEmployee = () => {
             }));
             console.log(roleChoices)
 
-        db.promise().query ('SELECT CONCAT (employee.first_name, " ", employee.last_name) AS name, employee.id FROM employee')
-        .then(([managers]) => {
-            console.log(managers)
-            let managerChoices = managers.map(({
-                id, 
+            db.promise().query('SELECT CONCAT (employee.first_name, " ", employee.last_name) AS name, employee.id FROM employee')
+                .then(([managers]) => {
+                    console.log(managers)
+                    let managerChoices = managers.map(({
+                        id,
+                        name
+                    }) => ({
+                        name: name,
+                        value: id
+                    }));
+                    console.log(managerChoices)
+
+                    inquirer.prompt([
+                        {
+                            type: 'input',
+                            name: "firstName",
+                            message: "What is the employee's first name?"
+                        },
+                        {
+                            type: 'input',
+                            name: "lastName",
+                            message: "What is the employee's last name?"
+                        },
+                        {
+                            type: 'list',
+                            name: "role",
+                            message: "What is the employee's role?",
+                            choices: roleChoices
+                        },
+                        {
+                            type: 'list',
+                            name: "manager",
+                            message: "Who is the employee's manager?",
+                            choices: managerChoices
+                        }
+                    ])
+                        .then(({ firstName, lastName, role, manager }) => {
+                            console.log(firstName, lastName, role, manager)
+                            db.query(
+                                'INSERT INTO employee SET ?',
+                                {
+                                    first_name: firstName,
+                                    last_name: lastName,
+                                    emp_role_id: role,
+                                    manager_id: manager
+                                },
+                                function (err, results) {
+                                    console.table(results)
+                                }
+                            )
+                        })
+                        .then(() => allEmployees())
+                });
+        });
+};
+
+const updateEmpRole = () => {
+    db.promise().query('Select CONCAT(employee.first_name, " ", employee.Last_name) AS name FROM employee')
+        .then(([employees]) => {
+            let employeeChoice = employees.map(({
                 name
             }) => ({
-                name: name,
-                value: id
-            }));
-            console.log(managerChoices)
-        
-        
+                name: name
+            }))
+            console.log(employeeChoice)
+    db.promise().query('SELECT emp_role.id, emp_role.title FROM emp_role')
+                .then(([roles]) => {
+                    let roleChoices = roles.map(({
+                        id,
+                        title
+                    }) => ({
+                        name: title,
+                        value: id
+                    }));
+                    console.log(roleChoices)
 
-            inquirer.prompt([
-                {
-                    type: 'input',
-                    name: "firstName",
-                    message: "What is the employee's first name?"
-                },
-                {
-                    type: 'input',
-                    name: "lastName",
-                    message: "What is the employee's last name?"
-                },
-                {
-                    type: 'list',
-                    name: "role",
-                    message: "What is the employee's role?",
-                    choices: roleChoices
-                },
-                {
-                    type: 'list',
-                    name: "manager",
-                    message: "Who is the employee's manager?",
-                    choices: managerChoices
+                    inquirer.prompt([
+                        {
+                            type: 'list',
+                            name: "employee",
+                            message: "Which employee's role do you want to update?",
+                            choices: employeeChoice
+                        },
+                        {
+                            type: 'list',
+                            name: "role",
+                            message: "Which role do you want to assign the selected employee?",
+                            choices: roleChoices
                 }
             ])
-                .then(({ firstName, lastName, role, manager }) => {
-                    console.log(firstName, lastName, role, manager)
-                    db.query(
-                        'INSERT INTO employee SET ?',
-                        {
-                            first_name: firstName,
-                            last_name: lastName,
-                            emp_role_id: role,
-                            manager_id: manager
-                        },
-                        function (err, results) {
-                            console.table(results)
-                        }
-                    )
-                })
-                .then(() => allEmployees())
+            .then(({ employee, role }) => {
+                db.query('UPDATE employee SET emp_role_id = ? WHERE id = ?',
+                 {
+                    
+                     emp_role_id: role
+                },
+                function(err, results) {
+                    console.table(results)
+                }
+                )
+            })
+            .then(() => startApp())
         })
     })
-}
-// const addEmployee = () => {
-//    db.promise().query('SELECT emp_role.id, emp_role.title FROM emp_role')
-//         .then(([roles]) => {
-//             // console.log(roles)
-//             let roleChoices = roles.map(({
-//                 id,
-//                 title
-//             }) => ({
-//                 name: title,
-//                 value: id
-//             }));
-//             console.log(roleChoices)
-
-//         db.promise().query('SELECT CONCAT (employee.first_name, " ", employee.last_name) AS name, employee.id FROM employee')
-//         .then(([managers]) => {
-//             console.log(managers)
-//             let managerChoices = managers.map(({
-//                 id,
-//                 name
-//             }) => ({
-//                 name: name, 
-//                 value: id
-//             }));
-//             console.log(managerChoices)
-
-//     inquirer.prompt([
-//         {
-//             type: 'input',
-//             name: "firstName",
-//             message: "What is the employee's first name?"
-//         },
-//         {
-//             type: 'input',
-//             name: "lastName",
-//             message: "What is the employee's last name?"
-//         },
-//         {
-//             type: 'list',
-//             name: "role",
-//             message: "What is the employee's role?",
-//             choices: roleChoices
-//         },
-//         {
-//             type: 'list',
-//             name: "manager",
-//             message: "Who is the employee's manager?",
-//             choices: managerChoices
-//         }
-//     ])
-//         .then(({ firstName, lastName, role, manager }) => {
-//             console.log(firstName, lastName, role, manager)
-//             db.query(
-//                 'INSERT INTO employee SET ?',
-//                 {
-//                     first_name: firstName,
-//                     last_name: lastName,
-//                     emp_role_id: role,
-//                     manager_id: manager
-//                 },
-//                 function (err, results) {
-//                     console.table(results)
-//                 }
-//             )
-//         })
-//         .then(() => allEmployees())
-
-// })
-//         }
 
 
-        // const managerId= db.promise().query('SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id FROM employee')
-//            
 
+        }
 
-// INSERT INTO employee(first_name, last_name, emp_role_id, manager_id)
-// VALUES("Pam", "Beesly", 1, 1);
-// const updateEmployee= () => {
-//     inquier.prompt([
-//         {
-//             type:'input',
-//             name: "first_name",
-//             message: "What is the employee's first name?"
-
-//         }
-//     ])
-// }
-
-// UPDATE employee 
-// SET emp_role_id = 2
-// WHERE id = 9;
 
 
 
