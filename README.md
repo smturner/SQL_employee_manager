@@ -3,10 +3,6 @@
 rename the database when you get her code
 
 
-5. Create a main index.js file
-    -Import inquirer, console.table, db connection 
-    -Create a function to start the inquirer prompts and display the main menu
-    -Use conditionals to run appropriate function based on the user's choice in the main menu
 
 6. Create functions to handle each of the following (use SQL queries to accomplish this):
 Done----> view all departments (department name and id)

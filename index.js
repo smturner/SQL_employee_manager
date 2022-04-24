@@ -11,7 +11,7 @@ function startApp() {
             type: "list",
             name: "menu",
             message: "What would you like to do?",
-            choices: ["View All Departments", "Add Department", "View All Roles", "Add Role", "View All Employees", "Add an Employee", "Update Employee Role", "exit"]
+            choices: ["View All Departments", "Add Department", "View All Roles", "Add Role", "View All Employees", "Sort Employees by Department", "Sort Employees by Manager", "Add an Employee", "Update Employee Role", "exit"]
         }
     ])
         .then((ans) => {
@@ -32,6 +32,12 @@ function startApp() {
                 case "View All Employees":
                     allEmployees();
                     break;
+                case "Sort Employees by Department":
+                    sortByDept();
+                    break;
+                case "Sort Employees by Manager":
+                    sortByManager();
+                    break;
                 case "Add an Employee":
                     addEmployee();
                     break;
@@ -45,9 +51,7 @@ function startApp() {
             }
         })
 }
-
 startApp();
-
 
 //query functions
 function allDepts() {
@@ -137,6 +141,25 @@ function allEmployees() {
     });
 }
 
+function sortByDept() {
+    db.query(`SELECT E.id, E.first_name, E.last_name, R.title, D.dept_name, R.salary, CONCAT(M.first_name, " ", M.last_name) AS manager FROM employee E JOIN emp_role R ON E.emp_role_id = R.id JOIN department D ON R.dept_id = D.id LEFT JOIN employee M on E.manager_id = M.id ORDER BY dept_name`, (err, results) => {
+        console.table(results);
+        startApp();
+    });
+}
+
+function sortByManager() {
+    db.query(`SELECT E.id, E.first_name, E.last_name, R.title, D.dept_name, R.salary, CONCAT(M.first_name, " ", M.last_name) AS manager 
+    FROM employee E 
+    JOIN emp_role R ON E.emp_role_id = R.id 
+    JOIN department D ON R.dept_id = D.id 
+    LEFT JOIN employee M on E.manager_id = M.id
+    ORDER BY manager`, (err, results) => {
+        console.table(results);
+        startApp();
+    })
+}
+
 const addEmployee = () => {
     db.promise().query('SELECT emp_role.id, emp_role.title FROM emp_role')
         .then(([roles]) => {
@@ -205,58 +228,61 @@ const addEmployee = () => {
         });
 };
 
-const updateEmpRole = () => {
-    db.promise().query('Select CONCAT(employee.first_name, " ", employee.Last_name) AS name FROM employee')
-        .then(([employees]) => {
-            let employeeChoice = employees.map(({
-                name
-            }) => ({
-                name: name
-            }))
-            console.log(employeeChoice)
-    db.promise().query('SELECT emp_role.id, emp_role.title FROM emp_role')
-                .then(([roles]) => {
-                    let roleChoices = roles.map(({
-                        id,
-                        title
-                    }) => ({
-                        name: title,
-                        value: id
-                    }));
-                    console.log(roleChoices)
+// const updateEmpRole = () => {
+//     db.query('Select CONCAT(employee.first_name, " ", employee.Last_name) AS name FROM employee')
+//         .then(([employees]) => {
+//             let employeeChoice = employees.map(({
+//                 id,
+//                 first_name,
+//                 last_name
+//             }) => ({
+//                 name: `${first_name} ${last_name}`,
+//                 value: id
+//             }))
+//             console.log(employeeChoice)
+//     db.promise().query('SELECT emp_role.id, emp_role.title FROM emp_role')
+//                 .then(([roles]) => {
+//                     let roleChoices = roles.map(({
+//                         id,
+//                         title
+//                     }) => ({
+//                         name: title,
+//                         value: id
+//                     }));
+//                     console.log(roleChoices)
 
-                    inquirer.prompt([
-                        {
-                            type: 'list',
-                            name: "employee",
-                            message: "Which employee's role do you want to update?",
-                            choices: employeeChoice
-                        },
-                        {
-                            type: 'list',
-                            name: "role",
-                            message: "Which role do you want to assign the selected employee?",
-                            choices: roleChoices
-                }
-            ])
-            .then(({ employee, role }) => {
-                db.query('UPDATE employee SET emp_role_id = ? WHERE id = ?',
-                 {
-                    
-                     emp_role_id: role
-                },
-                function(err, results) {
-                    console.table(results)
-                }
-                )
-            })
-            .then(() => startApp())
-        })
-    })
+//                     inquirer.prompt([
+//                         {
+//                             type: 'list',
+//                             name: "employee_name",
+//                             message: "Which employee's role do you want to update?",
+//                             choices: employeeChoice
+//                         },
+//                         {
+//                             type: 'list',
+//                             name: "role",
+//                             message: "Which role do you want to assign the selected employee?",
+//                             choices: roleChoices
+//                 }
+//             ])
+//             .then(({ employee_name, role }) => {
+//                 db.query('UPDATE employee SET emp_role_id = ? WHERE id = ?',
+//                  {
+//                     id: employee_name,
+//                      emp_role_id: role
+//                 },
+//                 function(err, results) {
+//                     console.table(results)
+//                 }
+//                 )
+//             })
+//             .then(() => startApp())
+//         })
+//     })
 
 
 
-        }
+        // }
 
 
 
