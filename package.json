@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ascii-art-font": "^1.0.2",
     "console.table": "^0.10.0",
     "dotenv": "^16.0.0",
     "inquirer": "^8.2.2",

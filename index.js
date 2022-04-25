@@ -1,14 +1,17 @@
 const inquirer = require('inquirer');
-
-//needed if query functions are in this file
 const db = require('./db/connection');
 require('console.table');
-const { allDepts, addDepts, sortByDept } = require('./queryFunctions/deptQueryFunctions')
-const {allEmployees, addEmployee, updateEmpRole, removeEmployee} = require('./queryFunctions/empQueryFunctions')
-const {allRoles, addRole, removeRole} = require("./queryFunctions/roleQueryFunctions")
-const 
+const Font = require('ascii-art-font');
+
+Font.create('Employee Manager', "Doom", function(err, results) {
+    if(err) throw err;
+    console.log(results)
+    startApp()
+
+})
 
 function startApp() {
+
     inquirer.prompt([
         {
             type: "list",
@@ -54,16 +57,16 @@ function startApp() {
                     break;
                 case "Update Employee Manager":
                     updateEmpManager();
-                case "Exit":
+                case "quit":
                     break;
                 default:
                     process.exit();
             }
         })
 }
-startApp();
 
-//query functions
+
+// query functions
 function allDepts() {
     db.query('SELECT id, dept_name AS department FROM department;', function (err, results) {
         console.table(results);
@@ -81,7 +84,6 @@ const addDepts = () => {
     ])
         .then((dept_name) => {
             db.query(`INSERT INTO department(dept_name) VALUES (?)`, dept_name.name, function (err, results) {
-                // console.table(results)
                 console.log(err)
             });
             allDepts();
@@ -98,7 +100,7 @@ function allRoles() {
 const addRole = () => {
     db.promise().query('SELECT department.id, department.dept_name FROM department')
         .then(([departments]) => {
-           let departmentChoices = departments.map(({
+            let departmentChoices = departments.map(({
                 id,
                 dept_name
             }) => ({
@@ -160,14 +162,14 @@ const removeRole = () => {
                     choices: remove
                 },
             ])
-            .then((roleTitle) => {
-                db.query('DELETE FROM emp_role WHERE id= ?', [roleTitle.emp_role], function (err, results) {
-                    console.log(err)
-                    
+                .then((roleTitle) => {
+                    db.query('DELETE FROM emp_role WHERE id= ?', [roleTitle.emp_role], function (err, results) {
+                        console.log(err)
+
+                    })
                 })
-            })
-            .then(() => allRoles())
-})
+                .then(() => allRoles())
+        })
 }
 
 function allEmployees() {
@@ -279,14 +281,14 @@ const removeEmployee = () => {
                     choices: employeeChoice
                 },
             ])
-            .then((firstLastName) => {
-                db.query('DELETE FROM employee WHERE id= ?', [firstLastName.employee_name], function (err, results) {
-                    console.log(err)
-                    
+                .then((firstLastName) => {
+                    db.query('DELETE FROM employee WHERE id= ?', [firstLastName.employee_name], function (err, results) {
+                        console.log(err)
+
+                    })
                 })
-            })
-            .then(() => allEmployees())
-})
+                .then(() => allEmployees())
+        })
 }
 
 const updateEmpRole = () => {
@@ -330,7 +332,7 @@ const updateEmpRole = () => {
                                 [
                                     emp_role,
                                     employee_name
-                                ], 
+                                ],
                                 function (err, results) {
                                     console.log(err)
                                 }
@@ -353,14 +355,14 @@ const updateEmpManager = () => {
             }));
 
             db.promise().query('SELECT CONCAT (employee.first_name, " ", employee.last_name) AS name, employee.id FROM employee')
-            .then(([managers]) => {
-                let managerChoices = managers.map(({
-                    id,
-                    name
-                }) => ({
-                    name: name,
-                    value: id
-                }));
+                .then(([managers]) => {
+                    let managerChoices = managers.map(({
+                        id,
+                        name
+                    }) => ({
+                        name: name,
+                        value: id
+                    }));
 
                     inquirer.prompt([
                         {
@@ -382,7 +384,7 @@ const updateEmpManager = () => {
                                 [
                                     manager,
                                     employee_name
-                                ], 
+                                ],
                                 function (err, results) {
                                     console.log(err)
                                 }
