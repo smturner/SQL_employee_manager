@@ -37,6 +37,14 @@ UPDATE employee
 SET emp_role_id = 2
 WHERE id = 9;
 
+UPDATE employee
+SET manager_id =1
+WHERE id= 4;
+
+SELECT id, title FROM emp_role;
+SELECT emp_role_id FROM employee;
+SELECT employee.first_name, employee.last_name FROM  employee;
+
 --order by department name
 SELECT E.id, E.first_name, E.last_name, R.title, D.dept_name, R.salary, CONCAT(M.first_name, " ", M.last_name) AS manager 
 FROM employee E 
@@ -53,4 +61,8 @@ LEFT JOIN employee M on E.manager_id = M.id
 ORDER BY manager;
 
 
-D
+ - Remove employee (bonus)
+- Remove role (bonus)
+- Update employee manager (bonus)
+
+DELETE FROM employee WHERE id=11;

@@ -11,14 +11,14 @@ Done----> view all employess (employee id, first name ,last name, job title, dep
 Done----> add a department (prompted to enter name of department and it's added to the database)
 Done----> add a role (proompted to add name salary and department)
 Done---->  --  - add an employee (employee first name, lasts name, role, manager)
-  --  - update an employee role (promted to select an employee to update and their new role)
+Done---->  - update an employee role (promted to select an employee to update and their new role)
 Done---->  --  - Exit
 
 EXTRAS if i can figure out the rest otherwise ignore
-    - View all employees by department (bonus)
-    - View all employees by manager(bonus)
-    - Remove employee (bonus)
-    - Remove role (bonus)
+  Done-----> - View all employees by department (bonus)
+  Done-----> - View all employees by manager(bonus)
+  Done---->  - Remove employee (bonus)
+  Done---> - Remove role (bonus)
     - Update employee manager (bonus)
 
 7. Call the function to start the prompts
