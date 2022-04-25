@@ -1,17 +1,19 @@
+//Required packages
 const inquirer = require('inquirer');
 const db = require('./db/connection');
 require('console.table');
 const Font = require('ascii-art-font');
 
+//package that creates the title for the application when deployed
 Font.create('Employee Manager', "Doom", function(err, results) {
     if(err) throw err;
     console.log(results)
     startApp()
+});
 
-})
-
+//function that starts the app
 function startApp() {
-
+//starts the prompts
     inquirer.prompt([
         {
             type: "list",
@@ -20,6 +22,7 @@ function startApp() {
             choices: ["View All Departments", "Add Department", "View All Roles", "Add Role", "Remove Role", "View All Employees", "Sort Employees by Department", "Sort Employees by Manager", "Add an Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "Exit"]
         }
     ])
+    //switch case that deploys the function of the clicked option
         .then((ans) => {
             switch (ans.menu) {
                 case "View All Departments":
@@ -63,8 +66,7 @@ function startApp() {
                     process.exit();
             }
         })
-}
-
+};
 
 // query functions
 function allDepts() {
@@ -72,7 +74,7 @@ function allDepts() {
         console.table(results);
         startApp();
     });
-}
+};
 
 const addDepts = () => {
     inquirer.prompt([
@@ -95,7 +97,7 @@ function allRoles() {
         console.table(results)
         startApp();
     });
-}
+};
 
 const addRole = () => {
     db.promise().query('SELECT department.id, department.dept_name FROM department')
@@ -141,7 +143,7 @@ const addRole = () => {
                 })
                 .then(() => allRoles())
         })
-}
+};
 
 const removeRole = () => {
     db.promise().query('SELECT emp_role.id, emp_role.title FROM emp_role')
@@ -170,14 +172,14 @@ const removeRole = () => {
                 })
                 .then(() => allRoles())
         })
-}
+};
 
 function allEmployees() {
     db.query('SELECT E.id, E.first_name, E.last_name, R.title, D.dept_name AS department, R.salary, CONCAT(M.first_name, " ", M.last_name) AS manager FROM employee E JOIN emp_role R ON E.emp_role_id = R.id JOIN department D ON R.dept_id = D.id LEFT JOIN employee M on E.manager_id = M.id', (err, results) => {
         console.table(results)
         startApp();
     });
-}
+};
 
 function sortByDept() {
     db.query(`SELECT E.id, E.first_name, E.last_name, R.title, D.dept_name, R.salary, CONCAT(M.first_name, " ", M.last_name) AS manager FROM employee E JOIN emp_role R ON E.emp_role_id = R.id JOIN department D ON R.dept_id = D.id LEFT JOIN employee M on E.manager_id = M.id ORDER BY dept_name`, (err, results) => {
@@ -196,7 +198,7 @@ function sortByManager() {
         console.table(results);
         startApp();
     })
-}
+};
 
 const addEmployee = () => {
     db.promise().query('SELECT emp_role.id, emp_role.title FROM emp_role')
@@ -289,7 +291,7 @@ const removeEmployee = () => {
                 })
                 .then(() => allEmployees())
         })
-}
+};
 
 const updateEmpRole = () => {
     db.promise().query('SELECT employee.id, CONCAT (employee.first_name, " ", employee.last_name) AS name FROM employee')
